@@ -57,8 +57,19 @@ new Vue({
         addToCart: function(Product) {
             if (this.addedOrNot[Product.id] === 0)
                 this.cart.item.push({product: Product});
-            this.addedOrNot[Product.id] ++;
+            this.$set(this.addedOrNot, Product.id, this.addedOrNot[Product.id] + 1);
             Product.inStock --;
+        },
+
+        removeFromCart: function (Product) {
+            this.addedOrNot[Product.id] --;
+            if (this.addedOrNot[Product.id] == 0)
+            {
+                var Index = this.cart.item.findIndex(zzz => zzz.product.id == Product.id);
+                this.cart.item.splice(Index, 1);
+            }
+            else this.$set(this.addedOrNot, Product.id, this.addedOrNot[Product.id]);
+            Product.inStock ++;
         },
 
         totalAmountMoney: function() {
@@ -73,8 +84,11 @@ new Vue({
         },
 
         Wipeout: function() {
-            while (this.cart.item.length > 0) this.cart.item.pop();
-            alert("Transaction Complete!");
+            if (confirm("Are you sure that you want to purchase the items?"))
+            {
+                while (this.cart.item.length > 0) this.cart.item.pop();
+                alert("Transaction Complete!");
+            }
         },
 
         getTaxesAmount: function() {
